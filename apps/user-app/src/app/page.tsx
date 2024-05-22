@@ -1,49 +1,71 @@
-'use client'
+"use client";
 import axios from "axios";
 import { useState } from "react";
 
 import { CreatePost } from "~/app/_components/create-post";
 import { api } from "~/trpc/server";
 
-export default  function Home() {
+export default function Home() {
   const [url, setUrl] = useState<string>("");
   const [file, setFile] = useState<File | null>();
-  console.log(file);
-  
+  const [fields, setFields] = useState<object>({ key: "" });
 
-  const getSignedUrl = async (filename:string)=>{
+  const getSignedUrl = async (filename: string, filetype: string) => {
+    const url = await axios.get("http://localhost:3003/getsignedurl", {
+      params: { filename, filetype },
+    });
 
-    const url = await axios.get("http://localhost:3003/getsignedurl", {params:{filename}});
-    console.log(url.data.url);
+    setUrl((prev) => url.data.url.url);
+    setFields((prev) => url.data.url.fields);
+    console.log("hi");
+  };
+
+  const UploadFileToS3 = async () => {
+    const data = await axios.get("http://localhost:3003/getsignedurl", {
+      params: { filename: file?.name, filetype: file?.type },
+    });
+    const formData = new FormData();
+
+
+    const fields = data.data.url.fields;
+    const url = data.data.url.url;
+
+    console.log(fields);
     
-    setUrl(url.data.url);
-  }
-
-  const UploadFileToS3 = async ()=>{
-
-    await getSignedUrl(file?.name as string);
-
-    try {
-      const response = await axios.put(url, file, {
-        headers: {
-          'Content-Type': file?.type,
-        },
-      });
-      console.log('File uploaded successfully:', response);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
 
 
-  }
+    //@ts-ignore
+    formData.set("bucket", fields["bucket"])
+    formData.set("X-Amz-Algorithm", fields["X-Amz-Algorithm"]);
+    formData.set("X-Amz-Credential", fields["X-Amz-Credential"]);
+    formData.set("X-Amz-Algorithm", fields["X-Amz-Algorithm"]);
+    formData.set("X-Amz-Date", fields["X-Amz-Date"]);
+    formData.set("key", fields["key"]);
+    formData.set("Policy", fields["Policy"]);
+    formData.set("X-Amz-Signature", fields["X-Amz-Signature"]);
+    formData.set("X-Amz-Algorithm", fields["X-Amz-Algorithm"]);
 
+
+    //@ts-ignore
+    formData.set("file", file);
+
+
+
+    // Upload file to S3 using the presigned URL
+    console.log(formData);
+
+    const response = await axios.post(url, formData);
+  };
 
   return (
-    <div className="flex flex-col w-1/2">
+    <div className="flex w-1/2 flex-col">
       <button onClick={UploadFileToS3}>upload video</button>
-      <input type="file" name="" id="" onChange={(e)=>setFile(e.target.files && e.target.files[0])}/>
-      <button onClick={()=>getSignedUrl('filename')}>get signedurl</button>
+      <input
+        type="file"
+        name=""
+        id=""
+        onChange={(e) => setFile(e.target.files && e.target.files[0])}
+      />
     </div>
   );
 }
-
