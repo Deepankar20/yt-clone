@@ -26,16 +26,13 @@ export default function Home() {
     });
     const formData = new FormData();
 
-
     const fields = data.data.url.fields;
     const url = data.data.url.url;
 
     console.log(fields);
-    
-
 
     //@ts-ignore
-    formData.set("bucket", fields["bucket"])
+    formData.set("bucket", fields["bucket"]);
     formData.set("X-Amz-Algorithm", fields["X-Amz-Algorithm"]);
     formData.set("X-Amz-Credential", fields["X-Amz-Credential"]);
     formData.set("X-Amz-Algorithm", fields["X-Amz-Algorithm"]);
@@ -45,16 +42,18 @@ export default function Home() {
     formData.set("X-Amz-Signature", fields["X-Amz-Signature"]);
     formData.set("X-Amz-Algorithm", fields["X-Amz-Algorithm"]);
 
-
     //@ts-ignore
     formData.set("file", file);
 
-
-
     // Upload file to S3 using the presigned URL
-    console.log(formData);
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
 
-    const response = await axios.post(url, formData);
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData
+    });
   };
 
   return (
