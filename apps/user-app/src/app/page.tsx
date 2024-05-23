@@ -2,23 +2,11 @@
 import axios from "axios";
 import { useState } from "react";
 
-import { CreatePost } from "~/app/_components/create-post";
-import { api } from "~/trpc/server";
-
 export default function Home() {
   const [url, setUrl] = useState<string>("");
   const [file, setFile] = useState<File | null>();
   const [fields, setFields] = useState<object>({ key: "" });
 
-  const getSignedUrl = async (filename: string, filetype: string) => {
-    const url = await axios.get("http://localhost:3003/getsignedurl", {
-      params: { filename, filetype },
-    });
-
-    setUrl((prev) => url.data.url.url);
-    setFields((prev) => url.data.url.fields);
-    console.log("hi");
-  };
 
   const UploadFileToS3 = async () => {
     const data = await axios.get("http://localhost:3003/getsignedurl", {
@@ -31,7 +19,6 @@ export default function Home() {
 
     console.log(fields);
 
-    //@ts-ignore
     formData.set("bucket", fields["bucket"]);
     formData.set("X-Amz-Algorithm", fields["X-Amz-Algorithm"]);
     formData.set("X-Amz-Credential", fields["X-Amz-Credential"]);
@@ -45,10 +32,6 @@ export default function Home() {
     //@ts-ignore
     formData.set("file", file);
 
-    // Upload file to S3 using the presigned URL
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
 
     const response = await fetch(url, {
       method: 'POST',

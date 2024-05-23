@@ -29,11 +29,11 @@ async function generatePresignedUrl(
     Key: fileName,
     Conditions: [
       { bucket: bucketName },
-      ["starts-with", "$key", `user`],
+      ["starts-with", "$key", 'user'],
       ["content-length-range", 0, 1000000],
     ],
     Fields: {
-      key: fileName,
+      key: 'user',
     },
     Expires: 600, // URL expiration time in seconds
   };
