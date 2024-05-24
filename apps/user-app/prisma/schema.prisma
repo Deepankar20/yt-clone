@@ -2,19 +2,126 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    @@index([name])
+  @@index([name])
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  username      String         @unique
+  email         String         @unique
+  password      String
+  joinedDate    DateTime       @default(now())
+  avatarUrl     String?        @default("")
+  country       String
+  channels      Channel[]
+  videos        Video[]
+  likes         Like[]
+  comments      Comment[]
+  playlists     Playlist[]
+  subscriptions Subscription[] @relation("subscriptionsByUser")
+}
+
+model Video {
+  id            Int            @id @default(autoincrement())
+  title         String         @unique
+  description   String
+  uploadDate    DateTime       @default(now())
+  duration      Int
+  thumbnailUrl  String?        @default("")
+  category      String
+  views         Int            @default(0)
+  likes         Like[]
+  dislikes      Int            @default(0)
+  status        String
+  tags          String[]
+  language      String
+  channelId     Int
+  userId        Int
+  user          User           @relation(fields: [userId], references: [id])
+  comments      Comment[]
+  channel       Channel        @relation(fields: [channelId], references: [id])
+  playlistItems PlaylistItem[]
+}
+
+model Channel {
+  id                Int            @id @default(autoincrement())
+  userId            Int
+  channelName       String
+  description       String
+  creationDate      DateTime       @default(now())
+  profilePictureUrl String?        @default("")
+  coverPhotoUrl     String?        @default("")
+  subscribersCount  Int            @default(0)
+  totalViews        Int            @default(0)
+  videos            Video[]
+  subscriptions     Subscription[] @relation("subscriptionsToChannel")
+  user              User           @relation(fields: [userId], references: [id])
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  videoId   Int
+  user      User     @relation(fields: [userId], references: [id])
+  video     Video    @relation(fields: [videoId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Comment {
+  id              Int       @id @default(autoincrement())
+  videoId         Int
+  userId          Int
+  commentText     String
+  commentDate     DateTime  @default(now())
+  parentCommentId Int?
+  likes           Int       @default(0)
+  dislikes        Int       @default(0)
+  video           Video     @relation(fields: [videoId], references: [id])
+  user            User      @relation(fields: [userId], references: [id])
+  parentComment   Comment?  @relation("childComments", fields: [parentCommentId], references: [id])
+  childComments   Comment[] @relation("childComments")
+}
+
+model Playlist {
+  id            Int            @id @default(autoincrement())
+  userId        Int
+  title         String
+  description   String?
+  creationDate  DateTime       @default(now())
+  privacyStatus String
+  playlistItems PlaylistItem[]
+  user          User           @relation(fields: [userId], references: [id])
+}
+
+model PlaylistItem {
+  id         Int @id @default(autoincrement())
+  playlistId Int
+  videoId    Int
+  position   Int
+
+  playlist Playlist @relation(fields: [playlistId], references: [id])
+  video    Video    @relation(fields: [videoId], references: [id])
+}
+
+model Subscription {
+  id                    Int      @id @default(autoincrement())
+  subscriberUserId      Int
+  subscribedToChannelId Int
+  subscriptionDate      DateTime @default(now())
+  subscriberUser        User     @relation("subscriptionsByUser", fields: [subscriberUserId], references: [id])
+  subscribedToChannel   Channel  @relation("subscriptionsToChannel", fields: [subscribedToChannelId], references: [id])
 }
