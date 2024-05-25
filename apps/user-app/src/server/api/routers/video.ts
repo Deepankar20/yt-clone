@@ -2,6 +2,7 @@ import { title } from "process";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { db } from "~/server/db";
 
 export const videoRouter = createTRPCRouter({
   create: publicProcedure
@@ -17,6 +18,7 @@ export const videoRouter = createTRPCRouter({
         language: z.string(),
         channelId: z.number(),
         userId: z.number(),
+        username: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -31,10 +33,11 @@ export const videoRouter = createTRPCRouter({
         language,
         channelId,
         userId,
+        username,
       } = input;
 
       try {
-        const video = await ctx.db.video.create({
+        const video = await db.video.create({
           data: {
             title,
             description,
@@ -48,6 +51,14 @@ export const videoRouter = createTRPCRouter({
             userId,
           },
         });
+
+        if (ctx.username !== username) {
+          return {
+            message: "login before uploading",
+            code: 403,
+            data: null,
+          };
+        }
 
         if (!video) {
           return {
@@ -85,7 +96,7 @@ export const videoRouter = createTRPCRouter({
       }
 
       try {
-        const videos = await ctx.db.video.findMany({
+        const videos = await db.video.findMany({
           where: {
             title: {
               contains: title,
@@ -129,7 +140,7 @@ export const videoRouter = createTRPCRouter({
       }
 
       try {
-        const videos = await ctx.db.video.findMany({
+        const videos = await db.video.findMany({
           where: {
             tags: {
               has: tag,
@@ -173,7 +184,7 @@ export const videoRouter = createTRPCRouter({
       }
 
       try {
-        const video = await ctx.db.video.findMany({
+        const video = await db.video.findMany({
           where: {
             id,
           },
@@ -215,7 +226,7 @@ export const videoRouter = createTRPCRouter({
       const { description, thumbnailUrl, title, status, id } = input;
 
       try {
-        const video = await ctx.db.video.update({
+        const video = await db.video.update({
           data: {
             description,
             thumbnailUrl,
@@ -260,7 +271,7 @@ export const videoRouter = createTRPCRouter({
       const { id } = input;
 
       try {
-        const video = await ctx.db.video.delete({
+        const video = await db.video.delete({
           where: {
             id,
           },

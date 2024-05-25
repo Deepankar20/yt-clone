@@ -7,8 +7,10 @@
  * need to use are documented accordingly near the end.
  */
 import { initTRPC } from "@trpc/server";
+import { headers } from "next/headers";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import jwt from "jsonwebtoken";
 
 import { db } from "~/server/db";
 
@@ -25,9 +27,28 @@ import { db } from "~/server/db";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const headers = opts;
+  //@ts-ignore
+  const token = headers.authorization?.split(" ")[1];
+
+  let username: string | undefined = undefined;
+
+  if (token) {
+    const payload = jwt.decode(token);
+    console.log(payload);
+    typeof payload === "object" && payload
+      ? (username = payload.username)
+      : null;
+  }
+
+  const user = db.user.findFirst({
+    where: {
+      username: username,
+    },
+  });
+
   return {
-    db,
-    ...opts,
+    username,
   };
 };
 
