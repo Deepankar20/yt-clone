@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { FaClock, FaHome, FaThumbsUp, FaUser } from "react-icons/fa";
 import { FaYoutubeSquare } from "react-icons/fa";
 
@@ -13,22 +14,29 @@ function SubCard(props: any) {
 }
 
 export default function Page() {
+  const [selected, setSelected] = useState("Home");
   return (
     <div className="w-1/7 flex flex-col gap-8">
       <div className="flex flex-col gap-3 text-sm">
-        <button className="flex items-center gap-2 rounded-lg p-2 hover:bg-gray-900">
+        <button
+          className={`flex items-center gap-2 rounded-lg p-2 ${selected === "Home" ? "bg-gray-900" : ""}  hover:bg-gray-900`}
+          onClick={() => setSelected("Home")}
+        >
           <FaHome /> Home
         </button>
 
-        <button className="flex items-center gap-2  rounded-lg p-2 hover:bg-gray-900">
+        <button
+          className={`flex items-center gap-2 ${selected === "Subscription" ? "bg-gray-900" : ""} rounded-lg p-2 hover:bg-gray-900`}
+          onClick={() => setSelected("Subscription")}
+        >
           <FaYoutubeSquare /> Subscription
         </button>
 
         <hr />
       </div>
 
-      <div className="flex flex-col gap-3 text-sm">
-        <button className="flex items-center gap-2  rounded-lg p-2 hover:bg-gray-900">
+      <div className="flex flex-col gap-3 text-xs">
+        <button className="flex items-center gap-1 rounded-lg p-2 hover:bg-gray-900">
           <FaUser /> Your Channel
         </button>
         <button className="flex items-center gap-2  rounded-lg p-2 hover:bg-gray-900">
