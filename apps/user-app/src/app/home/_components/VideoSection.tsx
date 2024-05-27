@@ -1,13 +1,16 @@
 import { useState } from "react";
 
 export default function page() {
-  const arr = [0, 0, 0, 0, 0, 0, 0, 0];
+  const arr = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ];
 
   return (
-    <div className="grid grid-cols-4">
-      {arr.map(() => {
+    <div className="grid grid-cols-4 ">
+      {arr.map((_, i) => {
         return (
           <VideoCard
+            key={i}
             videoTitle={
               "We Are BLOCKED!❌ KALKI Looks EPIC! || Men of Culture 130"
             }
@@ -32,15 +35,11 @@ const VideoCard = (props: any) => {
     props;
   return (
     <div>
-      <div className="flex h-[15vw] w-[23vw] flex-col p-8 m-7">
+      <div className="m-7 flex h-[15vw] w-[23vw] flex-col p-8">
         <img src={thumbnailUrl} alt="" className="rounded-sm" />
         <div className="relative bottom-5 left-2 text-xs">28:20</div>
         <div className="flex items-center gap-3">
-          <img
-            src={channelUrl}
-            alt=""
-            className="h-5 w-5 rounded-full"
-          />
+          <img src={channelUrl} alt="" className="h-5 w-5 rounded-full" />
           <div className="flex flex-col">
             <div className="text-sm">{videoTitle}</div>
             <div className="text-xs text-gray-400">{channelName}</div>

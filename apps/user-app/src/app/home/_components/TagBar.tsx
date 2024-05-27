@@ -13,15 +13,17 @@ export default function page() {
   return (
     <div>
       <div className="ml-9 flex gap-2 text-black">
-        {arr.map((tag) => {
+        {arr.map((tag, i) => {
           return (
             <button
               className={`rounded-sm py-1 pl-2 pr-2 text-xs ${selected === tag.name ? "bg-white text-black " : "bg-gray-700 text-white"}`}
               onClick={() => setSelected(tag.name)}
+              key={i}
             >
               <div>{tag.name}</div>
             </button>
           );
+          
         })}
       </div>
     </div>

@@ -1,5 +1,12 @@
-import { postRouter } from "~/server/api/routers/post";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
+import { videoRouter } from "./routers/video";
+import { userRouter } from "./routers/user";
+import { subscriptionRouter } from "./routers/subscription";
+import { playlistRouter } from "./routers/playlist";
+import { likeRouter } from "./routers/like";
+import { commentRouter } from "./routers/comment";
+import { channelRouter } from "./routers/channel";
+import { postRouter } from "./routers/post";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +15,13 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   post: postRouter,
+  video: videoRouter,
+  user: userRouter,
+  subscription: subscriptionRouter,
+  playlist: playlistRouter,
+  like: likeRouter,
+  comment: commentRouter,
+  channel: channelRouter,
 });
 
 // export type definition of API
