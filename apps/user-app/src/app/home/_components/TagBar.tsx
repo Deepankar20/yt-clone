@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 
 export default function page() {
@@ -23,7 +24,6 @@ export default function page() {
               <div>{tag.name}</div>
             </button>
           );
-          
         })}
       </div>
     </div>

@@ -1,8 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import React from "react";
 import { useState } from "react";
 
+//@ts-ignore
 import { api } from "~/trpc/react";
 
 export function CreatePost() {

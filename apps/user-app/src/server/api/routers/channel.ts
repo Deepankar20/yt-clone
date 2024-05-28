@@ -113,4 +113,50 @@ export const channelRouter = createTRPCRouter({
         };
       }
     }),
+
+  getChannel: publicProcedure
+    .input(
+      z.object({
+        channelId: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.username) {
+        return {
+          message: "unauthourized access",
+          code: 403,
+          data: null,
+        };
+      }
+
+      const { channelId } = input;
+
+      try {
+        const channel = await db.channel.findFirst({
+          where: {
+            id: channelId,
+          },
+        });
+
+        if (!channel) {
+          return {
+            message: "channel not found",
+            code: 404,
+            data: channel,
+          };
+        }
+
+        return {
+          message: "channel found",
+          code: 201,
+          data: channel,
+        };
+      } catch (error) {
+        return {
+          message: "internal server error",
+          code: 501,
+          data: null,
+        };
+      }
+    }),
 });
