@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useState } from "react";
 
@@ -24,6 +25,7 @@ export default function page() {
             channelUrl={
               "https://yt3.ggpht.com/ytc/AIdro_k7J8-LWCa5QLDnY3x9kaArgJoSSMory4hgkYSBOFgvEg=s68-c-k-c0x00ffffff-no-rj"
             }
+            videoId={2}
           />
         );
       })}
@@ -32,10 +34,18 @@ export default function page() {
 }
 
 const VideoCard = (props: any) => {
-  const { videoTitle, channelName, thumbnailUrl, channelUrl, views, time } =
-    props;
+  const router = useRouter();
+  const {
+    videoTitle,
+    channelName,
+    thumbnailUrl,
+    channelUrl,
+    views,
+    time,
+    videoId,
+  } = props;
   return (
-    <div>
+    <div onClick={() => router.push(`/video?videoId=${videoId}`)}>
       <div className="m-7 flex h-[15vw] w-[23vw] flex-col p-8">
         <img src={thumbnailUrl} alt="" className="rounded-sm" />
         <div className="relative bottom-5 left-2 text-xs">28:20</div>

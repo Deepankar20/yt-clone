@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import TopBar from "./TopBar";
 
 export default function page() {
+  const router = useRouter();
   return (
     <div className="bg-black text-white">
       <div className="m-5 flex items-center justify-between">
@@ -11,6 +13,7 @@ export default function page() {
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzdG75dz4wRYlq4xBDciPhO7xgpuYyfDRVRuTZNUUEuQ&s"
             alt=""
             className="h-16 w-28 hover:cursor-pointer"
+            onClick={() => router.push("/home")}
           />
         </div>
         <TopBar />

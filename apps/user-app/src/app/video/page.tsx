@@ -1,3 +1,4 @@
+"use client";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 import NavBar from "~/app/_components/NavBar";
@@ -9,8 +10,10 @@ const DynamicVideo = dynamic(() => import("./_components/Video"), {
   ssr: false,
 });
 
-export default function page({ params }: { params: { videoId: Number } }) {
-  const videoId = params.videoId;
+export default function page() {
+  const videoId = useSearchParams().get("videoId");
+
+  
 
   return (
     <div className="bg-black text-white">

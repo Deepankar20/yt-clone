@@ -2,10 +2,11 @@
 
 import LeftSideBar from "~/app/_components/LeftSideBar";
 import NavBar from "~/app/_components/NavBar";
-import ChannelBanner from "../_components/ChannelBanner";
-import ChannelDetails from "../_components/ChannelDetails";
-import ChannelMain from "../_components/ChannelMain";
+import ChannelBanner from "./_components/ChannelBanner";
+import ChannelDetails from "./_components/ChannelDetails";
+import ChannelMain from "./_components/ChannelMain";
 import { api } from "~/trpc/react";
+import React from "react";
 
 export default function page({ params }: { params: { channelId: Number } }) {
   const channelId = params.channelId;
