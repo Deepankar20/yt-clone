@@ -1,5 +1,10 @@
 import React from "react";
-import { FaRegThumbsDown, FaRegThumbsUp } from "react-icons/fa";
+import {
+  FaDownload,
+  FaRegThumbsDown,
+  FaRegThumbsUp,
+  FaShare,
+} from "react-icons/fa";
 
 export default function Page() {
   return (
@@ -27,16 +32,21 @@ export default function Page() {
         </div>
 
         <div className="flex gap-2">
-          <div className="flex items-center gap-2 rounded-xl bg-gray-800 p-2">
-            <button>
+          <div className="flex items-center gap-5 rounded-xl bg-gray-800 p-2">
+            <button className="flex items-center gap-1">
               <FaRegThumbsUp />0
             </button>
-            <button>
+            <button className="flex items-center gap-1">
               <FaRegThumbsDown />0
             </button>
           </div>
-          <div className="rounded-xl bg-gray-800 p-2">share</div>
-          <div className="rounded-xl bg-gray-800 p-2">download</div>
+          <div className="flex items-center gap-1 rounded-xl bg-gray-800 p-2">
+            Share
+            <FaShare />
+          </div>
+          <div className="flex items-center gap-1 rounded-xl bg-gray-800 p-2">
+            Download <FaDownload />
+          </div>
         </div>
       </div>
     </div>
