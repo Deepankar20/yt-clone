@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   FaDownload,
   FaRegThumbsDown,
@@ -6,14 +6,40 @@ import {
   FaShare,
 } from "react-icons/fa";
 
+import VideoPlayer from "./VideoPlayer";
+import videojs from "video.js";
+
 export default function Page() {
+  const playerRef = useRef(null);
+  const videoLink =
+    "https://d9bskl3ph7fg2.cloudfront.net/hls/BB_7df87ab2-b553-4c30-a78b-901d3e4c7300_preview.mp4/index.m3u8";
+  const videoPlayerOptions = {
+    controls: true,
+    responsive: true,
+    fluid: true,
+    sources: [
+      {
+        src: videoLink,
+        type: "application/x-mpegURL",
+      },
+    ],
+  };
+
+  const handlePlayerReady = (player: any) => {
+    playerRef.current = player;
+
+    // You can handle player events here, for example:
+    player.on("waiting", () => {
+      videojs.log("player is waiting");
+    });
+
+    player.on("dispose", () => {
+      videojs.log("player will dispose");
+    });
+  };
   return (
     <div className="flex flex-col gap-2 p-1">
-      <video
-        controls
-        src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-        className="rounded-lg"
-      ></video>
+      <VideoPlayer src={videoLink} />
 
       <p>Title</p>
 

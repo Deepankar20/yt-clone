@@ -7,35 +7,16 @@ export default function Home() {
   const [file, setFile] = useState<File | null>();
   const [fields, setFields] = useState<object>({ key: "" });
 
-
   const UploadFileToS3 = async () => {
     const data = await axios.get("http://localhost:3003/getsignedurl", {
-      params: { filename: file?.name, filetype: file?.type },
+      params: { filename: file?.name, contentType: file?.type },
     });
-    const formData = new FormData();
 
-    const fields = data.data.url.fields;
-    const url = data.data.url.url;
+    console.log(data);
 
-    console.log(fields);
-
-    formData.set("bucket", fields["bucket"]);
-    formData.set("X-Amz-Algorithm", fields["X-Amz-Algorithm"]);
-    formData.set("X-Amz-Credential", fields["X-Amz-Credential"]);
-    formData.set("X-Amz-Algorithm", fields["X-Amz-Algorithm"]);
-    formData.set("X-Amz-Date", fields["X-Amz-Date"]);
-    formData.set("key", fields["key"]);
-    formData.set("Policy", fields["Policy"]);
-    formData.set("X-Amz-Signature", fields["X-Amz-Signature"]);
-    formData.set("X-Amz-Algorithm", fields["X-Amz-Algorithm"]);
-
-    //@ts-ignore
-    formData.set("file", file);
-
-
-    const response = await fetch(url, {
-      method: 'POST',
-      body: formData
+    const response = await fetch(data.data.url, {
+      method: "PUT",
+      body: file,
     });
   };
 
