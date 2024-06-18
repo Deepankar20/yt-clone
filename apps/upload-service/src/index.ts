@@ -19,50 +19,27 @@ const s3Client = new S3Client({
   },
 });
 
-async function generatePresignedUrl(
-  bucketName: string,
-  fileName: string,
-  fileType: string
-) {
-  const s3Params = {
-    Bucket: bucketName,
-    Key: fileName,
-    Conditions: [
-      { bucket: bucketName },
-      ["starts-with", "$key", 'user'],
-      ["content-length-range", 0, 1000000],
-    ],
-    Fields: {
-      key: 'user',
-    },
-    Expires: 600, // URL expiration time in seconds
-  };
+async function putObject(filename: string, contentType: string) {
+  const command = new PutObjectCommand({
+    Bucket: "videostore20",
+    Key: `${filename}`,
+    ContentType: contentType,
+  });
 
-  try {
-    //@ts-ignore
-    const url = await createPresignedPost(s3Client, s3Params);
+  const putObjectUrl = getSignedUrl(s3Client, command);
 
-    return url;
-  } catch (error) {
-    console.log(error);
-    return "";
-  }
+  return putObjectUrl;
 }
 
 app.get("/getSignedUrl", async (req: any, res: any) => {
-  const { filename, filetype } = req.query;
-  console.log(filename);
+  const { filename, contentType } = req.query;
 
-  const signedURL = await generatePresignedUrl(
-    "videostore20",
-    filename,
-    filetype
-  );
+  const url = await putObject(filename, contentType);
 
-  if (signedURL) {
-    res.status(200).json({
-      msg: "successfully generated signedURL",
-      url: signedURL,
+  if (url) {
+    res.status(201).json({
+      message: "url generated",
+      url: url,
     });
   }
 });

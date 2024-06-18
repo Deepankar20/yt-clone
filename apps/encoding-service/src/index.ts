@@ -15,8 +15,6 @@ const execPromise = promisify(exec);
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 require("dotenv").config();
 
-console.log(process.env.lol);
-
 const s3Client = new S3Client({
   region: "ap-south-1",
   credentials: {
@@ -39,9 +37,7 @@ async function listNewObjects(bucketName: string, lastCheckTimestamp: number) {
       //@ts-ignore
       const objectTimestamp = new Date(object.Key.split("-")[1]).getTime(); // Extract timestamp from object key
       if (objectTimestamp > lastCheckTimestamp) {
-        console.log(object.Key);
         if (object.Key?.split(".")[1] === "mp4") {
-          console.log("videos are : ", object.Key);
         }
         // Process the new video file here
       }
@@ -81,11 +77,9 @@ async function processVideo(bucketName: string, objectKey: string) {
   try {
     if (!fs.existsSync(localOutputPath)) {
       fs.mkdirSync(localOutputPath, { recursive: true });
-      console.log(`Created directory: ${localOutputPath}`);
     }
 
     await downloadFile(bucketName, objectKey, localInputPath);
-    console.log("Downloaded video:", objectKey, "to", localInputPath);
 
     const ffmpegCommand = `
       ffmpeg -i ${localInputPath} \
@@ -95,14 +89,12 @@ async function processVideo(bucketName: string, objectKey: string) {
       -hls_list_size 0 \
       -f hls ${outputPlaylist}
     `;
-    console.log("Running FFmpeg command:", ffmpegCommand.trim());
+
     await execPromise(ffmpegCommand);
 
     await deleteFile(bucketName, objectKey);
-    console.log("Video processing to HLS complete:", objectKey);
 
     if (fs.existsSync(outputPlaylist)) {
-      console.log("HLS playlist created:", outputPlaylist);
     } else {
       throw new Error(`HLS playlist not found: ${outputPlaylist}`);
     }
@@ -171,7 +163,6 @@ async function uploadFile(bucketName: string, s3Key: string, filePath: string) {
   });
 
   await s3Client.send(command);
-  console.log("Uploaded file to S3:", s3Key);
 }
 
 async function deleteFile(bucketName: string, objectKey: string) {
@@ -181,7 +172,6 @@ async function deleteFile(bucketName: string, objectKey: string) {
   });
 
   await s3Client.send(command);
-  console.log("Deleted original video from S3:", objectKey);
 }
 
 async function main() {
@@ -200,7 +190,6 @@ async function main() {
     // Add new objects to the processing queue
     //@ts-ignore
     videoQueue.push(...newObjects);
-    console.log(newObjects);
 
     // Update the previous object list
     //@ts-ignore

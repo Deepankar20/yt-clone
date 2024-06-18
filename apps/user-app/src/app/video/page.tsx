@@ -5,10 +5,13 @@ import NavBar from "~/app/_components/NavBar";
 import Sidebar from "./_components/Sidebar";
 import Video from "./_components/Video";
 import dynamic from "next/dynamic";
+import { api } from "~/trpc/react";
 
 const DynamicVideo = dynamic(() => import("./_components/Video"), {
   ssr: false,
 });
+
+// const getVideoById = api.video.getVideoById.useMutation()
 
 export default function page() {
   const videoId = useSearchParams().get("videoId");
@@ -21,7 +24,7 @@ export default function page() {
 
       <div className="flex">
         <div className="w-5/6">
-          <DynamicVideo />
+          <DynamicVideo videoUrl={""}/>
         </div>
         <Sidebar />
       </div>

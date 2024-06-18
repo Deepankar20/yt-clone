@@ -9,10 +9,10 @@ import {
 import VideoPlayer from "./VideoPlayer";
 import videojs from "video.js";
 
-export default function Page() {
+export default function Page({ videoUrl }: any) {
   const playerRef = useRef(null);
   const videoLink =
-    "https://d9bskl3ph7fg2.cloudfront.net/hls/BB_7df87ab2-b553-4c30-a78b-901d3e4c7300_preview.mp4/index.m3u8";
+    "https://d9bskl3ph7fg2.cloudfront.net/hls/1MB.mp4/index.m3u8";
   const videoPlayerOptions = {
     controls: true,
     responsive: true,
